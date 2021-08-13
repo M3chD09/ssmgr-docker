@@ -1,0 +1,73 @@
+version: "3.9"
+
+networks:
+  net:
+
+volumes:
+  db:
+
+services:
+  db:
+    image: mariadb
+    restart: always
+    networks:
+      - net
+    volumes:
+      - db:/var/lib/mysql
+    environment:
+      - MARIADB_ROOT_PASSWORD=dbrootpassword
+      - MARIADB_DATABASE=ssmgr
+      - MARIADB_USER=ssmgr_user
+      - MARIADB_PASSWORD=dbpassword
+
+  redis:
+    image: redis:alpine
+    restart: always
+    networks: 
+      - net
+
+  nginx:
+    image: nginx
+    restart: always
+    networks:
+      - net
+    volumes:
+      - ./nginx/ssmgr.conf:/etc/nginx/conf.d/ssmgr.conf
+      - ./nginx/sv.conf:/etc/nginx/conf.d/sv.conf
+    depends_on:
+      - sv
+      - ssmgrs
+      - ssmgrm
+    ports:
+      - 80:80
+
+  ssmgrm:
+    image: m3chd09/ssmgr
+    restart: always
+    networks:
+      - net
+    volumes:
+      - ./ssmgr/m:/root/.ssmgr
+    depends_on:
+      - db
+      - redis
+      - ssmgrs
+    command: ssmgr -c /root/.ssmgr/default.yml
+
+  ssmgrs:
+    image: m3chd09/ssmgr
+    restart: always
+    networks:
+      - net
+    volumes:
+      - ./ssmgr/s:/root/.ssmgr
+    depends_on:
+      - sv
+    command: ssmgr -c /root/.ssmgr/default.yml
+
+  sv:
+    image: m3chd09/ssmgr
+    restart: always
+    networks:
+      - net
+    command: ss-manager -m aes-256-gcm -u --manager-address sv:6001 --plugin v2ray-plugin --plugin-opts "server;loglevel=none"

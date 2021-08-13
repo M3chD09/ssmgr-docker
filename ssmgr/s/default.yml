@@ -1,0 +1,7 @@
+type: s
+shadowsocks:
+  address: sv:6001
+manager:
+  address: ssmgrs:6002
+  password: '123456'
+db: 'db.sqlite'
