@@ -2,9 +2,9 @@ FROM ubuntu:20.04
 
 LABEL maintainer="m3chd09 <m3chd09@protonmail.com>"
 
-ARG SSMGRVER=0.37.4
-ARG SSVER=v1.11.2
-ARG V2VER=v1.3.1
+ARG SSMGRVER=0.38.10
+ARG SSVER=v1.12.4
+ARG V2VER=v1.4.1
 ARG DEBIAN_FRONTEND=noninteractive
 
 RUN apt update && \
@@ -15,7 +15,7 @@ RUN apt update && \
     ss_file="shadowsocks-${SSVER}.x86_64-unknown-linux-gnu.tar.xz" && \
     v2_file="v2ray-plugin-linux-amd64-${V2VER}.tar.gz" && \
     ss_url="https://github.com/shadowsocks/shadowsocks-rust/releases/download/${SSVER}/${ss_file}" && \
-    v2_url="https://github.com/shadowsocks/v2ray-plugin/releases/download/${V2VER}/${v2_file}" && \
+    v2_url="https://github.com/M3chD09/v2ray-plugin/releases/download/${V2VER}/${v2_file}" && \
     wget $ss_url && \
     tar -C /usr/bin/ -xf $ss_file && \
     wget $v2_url && \
